@@ -7,7 +7,7 @@ const Dashboard01 = () => {
   const [data, setData] = useState("");
   const [intervalId, setIntervalId] = useState(null);
 
-  // 🔌 Connect to ESP32
+  //  Connect to ESP32
   const connectToESP32 = async () => {
     try {
       const res = await axios.get(`http://${ip}/connect`);
@@ -21,7 +21,7 @@ const Dashboard01 = () => {
     }
   };
 
-  // 🔁 Poll data every second
+  //  Poll data every second
   const startPolling = () => {
     const id = setInterval(async () => {
       try {
@@ -34,12 +34,12 @@ const Dashboard01 = () => {
     setIntervalId(id);
   };
 
-  // 🛑 Cleanup on unmount
+  //  Cleanup on unmount
   useEffect(() => {
     return () => clearInterval(intervalId);
   }, [intervalId]);
 
-  // 📤 Send ON command
+  //  Send ON command
   const sendOnCommand = async () => {
     try {
       await axios.get(`http://${ip}/cmd?value=ON`);
