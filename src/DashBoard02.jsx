@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-// 📁 Utility: Export sensor log as CSV file
+// -----------------------------------------------------------------------------
+// 📁 Utility Function: Export logged data as CSV
+// -----------------------------------------------------------------------------
 const exportToCSV = (data, filename = "cansat_log.csv") => {
   if (!data || data.length === 0) return;
 
@@ -16,18 +18,19 @@ const exportToCSV = (data, filename = "cansat_log.csv") => {
     "latitude",
     "longitude",
     "satellites",
-    "time",
+    "esp32Time",
+    "dashboardTime",
   ];
 
-  // Format each row based on headers
+  // Format each row
   const csvRows = data.map((row) =>
     headers.map((header) => row[header] || "").join(",")
   );
 
-  // Combine headers and rows into CSV string
+  // Build CSV file content
   const csvContent = headers.join(",") + "\n" + csvRows.join("\n");
 
-  // Create downloadable blob and trigger download
+  // Create a downloadable file
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
@@ -37,38 +40,35 @@ const exportToCSV = (data, filename = "cansat_log.csv") => {
   document.body.removeChild(link);
 };
 
+// -----------------------------------------------------------------------------
+// 📊 React Component: DashBoard02
+// -----------------------------------------------------------------------------
 const DashBoard02 = () => {
-  // 🧠 State: IP address of ESP32
-  const [ip, setIp] = useState("");
+  // 🔹 State Variables
+  const [ip, setIp] = useState(""); // ESP32 IP address
+  const [connected, setConnected] = useState(false); // Connection status
+  const [sensorData, setSensorData] = useState({}); // Latest ESP32 data
+  const [logData, setLogData] = useState([]); // Historical log
+  const [intervalId, setIntervalId] = useState(null); // Polling interval
 
-  // 🔌 State: Connection status
-  const [connected, setConnected] = useState(false);
-
-  // 📡 State: Latest sensor data from ESP32
-  const [sensorData, setSensorData] = useState({});
-
-  // 🧾 State: Historical log of all received data
-  const [logData, setLogData] = useState([]);
-
-  // ⏱️ State: Interval ID for polling
-  const [intervalId, setIntervalId] = useState(null);
-
-  // 🔁 Function: Connect or disconnect from ESP32
+  // ---------------------------------------------------------------------------
+  // 🔌 Function: Connect or Disconnect from ESP32
+  // ---------------------------------------------------------------------------
   const toggleConnection = async () => {
     if (connected) {
-      // Disconnect logic
+      // Disconnect
       clearInterval(intervalId);
       setConnected(false);
       setSensorData({});
       return;
     }
 
-    // Attempt to connect to ESP32 via /connect route
     try {
+      // Try to connect to ESP32
       const res = await axios.get(`http://${ip}/connect`);
       if (res.data.connected) {
         setConnected(true);
-        startPolling(); // Begin data polling
+        startPolling(); // Start fetching data
       } else {
         alert("ESP32 did not confirm connection.");
       }
@@ -77,30 +77,41 @@ const DashBoard02 = () => {
     }
   };
 
-  // 🔄 Function: Poll ESP32 every second for sensor data
+  // ---------------------------------------------------------------------------
+  // ⏱️ Function: Poll ESP32 every second for sensor data
+  // ---------------------------------------------------------------------------
   const startPolling = () => {
     const id = setInterval(async () => {
       try {
         const res = await axios.get(`http://${ip}/data`);
+
+        // Add both ESP32-provided time and dashboard logging time
         const timestampedData = {
           ...res.data,
-          time: new Date().toISOString(), // Add timestamp on dashboard side
+          esp32Time: res.data.time,
+          dashboardTime: new Date().toISOString(),
         };
-        setSensorData(timestampedData); // Update live view
-        setLogData((prev) => [...prev, timestampedData]); // Append to log
+
+        setSensorData(timestampedData); // Show latest data
+        setLogData((prev) => [...prev, timestampedData]); // Append to history
       } catch (err) {
         console.error("Polling error:", err);
       }
     }, 1000);
+
     setIntervalId(id);
   };
 
+  // ---------------------------------------------------------------------------
   // 🧹 Cleanup: Stop polling when component unmounts
+  // ---------------------------------------------------------------------------
   useEffect(() => {
     return () => clearInterval(intervalId);
   }, [intervalId]);
 
-  // 💾 Function: Trigger CSV download of log data
+  // ---------------------------------------------------------------------------
+  // 💾 Function: Download logged data as CSV
+  // ---------------------------------------------------------------------------
   const handleLogDownload = () => {
     if (logData.length === 0) {
       alert("No data to save.");
@@ -109,63 +120,92 @@ const DashBoard02 = () => {
     exportToCSV(logData);
   };
 
+  // ---------------------------------------------------------------------------
+  // 🖼️ UI Rendering
+  // ---------------------------------------------------------------------------
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center py-6">
       {/* 🏷️ Title */}
-      <h1 className="text-2xl font-bold mb-4">
+      <h1 className="text-2xl font-bold mb-4 text-center">
         BRACU Diganta CanSat Learning Kit
       </h1>
 
       {/* 🌐 IP Input + Connect Button */}
-      <div className="flex gap-2 mb-4">
+      <div className="items-center flex gap-2 mb-2 text-sm text-center">
         <input
           type="text"
-          placeholder="Enter ESP32 IP (e.g. 192.168.0.123)"
+          placeholder="EnterEsp32 IP:192.168.0.123"
           value={ip}
           onChange={(e) => setIp(e.target.value)}
-          className="px-3 py-2 rounded text-white border-2"
+          className="px-1 py-1 rounded text-white border-2"
         />
         <button
           onClick={toggleConnection}
-          className={`px-4 py-2 rounded ${
+          className={`px-1 py-1 rounded ${
             connected ? "bg-red-500" : "bg-green-500"
           }`}
         >
           {connected ? "Disconnect" : "Connect"}
         </button>
+        {/* 🔍 Connection Status */}
+        <div className=" items-center">
+          {" "}
+          <p className="mb-1 text-sm ">
+            Status:{" "}
+            <span className={connected ? "text-green-400" : "text-red-400"}>
+              {connected ? "✅ " : "❌ "}
+            </span>
+          </p>
+        </div>
       </div>
 
-      {/* 🔍 Connection Status */}
-      <p className="mb-4">
-        Status:{" "}
-        <span className={connected ? "text-green-400" : "text-red-400"}>
-          {connected ? "✅ Connected" : "❌ Not Connected"}
-        </span>
-      </p>
-
-      {/* 📊 Sensor Data Display */}
-      <div className="grid grid-cols-2 gap-4 bg-gray-800 p-4 rounded-lg mb-4">
-        <div>Altitude: {sensorData.altitude || "-"} m</div>
-        <div>Temperature: {sensorData.temperature || "-"} °C</div>
-        <div>Pressure: {sensorData.pressure || "-"} hPa</div>
-        <div>Humidity: {sensorData.humidity || "-"} %</div>
-        <div>Battery: {sensorData.battery || "-"} %</div>
-        <div>Compass: {sensorData.compass || "-"}</div>
+      {/* 📊 Sensor Data */}
+      <div className="grid grid-cols-2 gap-2  rounded-lg mb-4 ">
+        <div className="bg-gray-800 p-1 rounded">
+          Altitude: {sensorData.altitude || "-"} m
+        </div>
+        <div className="bg-gray-800 p-1 rounded">
+          Temperature: {sensorData.temperature || "-"} °C
+        </div>
+        <div className="bg-gray-800 p-1 rounded">
+          Pressure: {sensorData.pressure || "-"} hPa
+        </div>
+        <div className="bg-gray-800 p-2 rounded">
+          Humidity: {sensorData.humidity || "-"} %
+        </div>
+        <div className="bg-gray-800 p-1 rounded">
+          Battery: {sensorData.battery || "-"} %
+        </div>
+        <div className="bg-gray-800 p-1 rounded">
+          Compass: {sensorData.compass || "-"}
+        </div>
       </div>
 
-      {/* 🧭 GPS Data Display */}
-      <div className="bg-gray-800 p-4 rounded-lg mb-4 w-full max-w-md">
+      {/* 🧭 GPS Data */}
+      <div className="space-y-1 space-x-1 rounded-lg mb-4 w-full max-w-md">
         <h2 className="font-semibold mb-2">📡 GPS Data</h2>
-        <p>Latitude: {sensorData.latitude || "-"}</p>
-        <p>Longitude: {sensorData.longitude || "-"}</p>
-        <p>Satellites: {sensorData.satellites || "-"}</p>
-        <p>Time (UTC): {sensorData.time || "-"}</p>
+
+        <div className="bg-gray-800 p-1 rounded">
+          Latitude: {sensorData.latitude || "-"}
+        </div>
+        <div className="bg-gray-800 p-1 rounded">
+          Longitude: {sensorData.longitude || "-"}
+        </div>
+        <div className="bg-gray-800 p-1 rounded">
+          Satellites: {sensorData.satellites || "-"}
+        </div>
+        <div className="bg-gray-800 p-1 rounded">
+          ESP32 Time (UTC): {sensorData.esp32Time || "-"}
+        </div>
+        <div className="bg-gray-800 p-1 rounded">
+          Dashboard Log Time: {sensorData.dashboardTime || "-"}
+        </div>
       </div>
 
       {/* 📥 Log Download Button */}
       <button
         onClick={handleLogDownload}
-        className="px-4 py-2 bg-blue-500 rounded hover:bg-blue-600"
+        className="px-1 py-1 bg-blue-500 rounded hover:bg-blue-600"
       >
         Log Data (CSV)
       </button>
