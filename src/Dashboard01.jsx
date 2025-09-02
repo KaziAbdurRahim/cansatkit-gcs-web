@@ -1,6 +1,25 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
+// import { Helmet } from "react-helmet";
+
+// <Helmet>
+//   <script type="application/ld+json">
+//     {JSON.stringify({
+//       "@context": "https://schema.org",
+//       "@type": "Dataset",
+//       name: "CanSat Telemetry Dashboard",
+//       description:
+//         "Live sensor data from BRACU Diganta CanSat including GPS, altitude, temperature, and more.",
+//       creator: {
+//         "@type": "Organization",
+//         name: "BRAC University",
+//       },
+//       license: "https://opensource.org/licenses/MIT",
+//     })}
+//   </script>
+// </Helmet>
+
 const Dashboard01 = () => {
   // const [ip, setIp] = useState("");
 

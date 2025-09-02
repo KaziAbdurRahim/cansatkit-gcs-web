@@ -1,5 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import { Helmet } from "react-helmet";
+
+<Helmet>
+  <title>CanSat Ground Control System | BRACU Diganta</title>
+  <meta
+    name="description"
+    content="Monitor and control CanSat telemetry data in real-time using ESP32 and React."
+  />
+  <meta
+    name="keywords"
+    content="CanSat, Cansat GCS, ESP32, telemetry, ground control, BRACU Diganta, IoT, satellite "
+  />
+</Helmet>;
 
 // -----------------------------------------------------------------------------
 // 📁 Utility Function: Export logged data as CSV
@@ -125,7 +138,9 @@ const DashBoard03 = () => {
   // 📡 Send Calibration Command
   const handleCalibrate = async () => {
     try {
-      const command = encodeURIComponent("CMD,111,CALIBRATE");
+      //   const command = encodeURIComponent("CMD,111,CALIBRATE");
+      const command = "ON";
+
       await axios.get(`http://${ip}/cmd?value=${command}`);
       alert("Calibration command sent.");
     } catch (err) {
