@@ -8,7 +8,7 @@ const Home = () => {
     <div>
       <DashBoard02></DashBoard02>
       {/* <BasicConnection></BasicConnection> */}
-      <Dashboard01></Dashboard01>
+      {/* <Dashboard01></Dashboard01> */}
     </div>
   );
 };

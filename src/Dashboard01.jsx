@@ -2,7 +2,11 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const Dashboard01 = () => {
-  const [ip, setIp] = useState("");
+  // const [ip, setIp] = useState("");
+
+  // default for testing
+  const [ip, setIp] = useState("192.168.31.233");
+
   const [connected, setConnected] = useState(false);
   const [data, setData] = useState("");
   const [intervalId, setIntervalId] = useState(null);

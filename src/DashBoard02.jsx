@@ -159,25 +159,59 @@ const DashBoard02 = () => {
         </div>
       </div>
 
+      {/* Command panel */}
+      <div className="flex gap-1 mb-1">
+        <div>
+          {" "}
+          <button className="px-1 py-1 rounded text-sm bg-green-300">
+            log
+          </button>
+        </div>
+        <div>
+          {" "}
+          <button className="px-1 py-1 rounded text-sm bg-blue-500">
+            Reset
+          </button>
+        </div>
+        <div>
+          {" "}
+          <button className="px-1 py-1 rounded text-sm bg-yellow-600">
+            Calibrate
+          </button>
+        </div>
+        <div>
+          {" "}
+          <button className="px-1 py-1 rounded text-sm bg-amber-800">
+            kkk
+          </button>
+        </div>
+      </div>
+
       {/* 📊 Sensor Data */}
       <div className="grid grid-cols-2 gap-2  rounded-lg mb-4 ">
         <div className="bg-gray-800 p-1 rounded">
-          Altitude: {sensorData.altitude || "-"} m
+          <span className="text-cyan-200 font-semibold"> Altitude:</span>{" "}
+          {sensorData.altitude || "..."} m
         </div>
         <div className="bg-gray-800 p-1 rounded">
-          Temperature: {sensorData.temperature || "-"} °C
+          <span className="text-cyan-200 font-semibold">Temperature:</span>{" "}
+          {sensorData.temperature || "..."} °C
         </div>
         <div className="bg-gray-800 p-1 rounded">
-          Pressure: {sensorData.pressure || "-"} hPa
+          <span className="text-cyan-200 font-semibold">Pressure:</span>{" "}
+          {sensorData.pressure || "..."} hPa
         </div>
         <div className="bg-gray-800 p-2 rounded">
-          Humidity: {sensorData.humidity || "-"} %
+          <span className="text-cyan-200 font-semibold">Humidity:</span>{" "}
+          {sensorData.humidity || "..."} %
         </div>
         <div className="bg-gray-800 p-1 rounded">
-          Battery: {sensorData.battery || "-"} %
+          <span className="text-cyan-200 font-semibold">Battery:</span>{" "}
+          {sensorData.battery || "-"} %
         </div>
         <div className="bg-gray-800 p-1 rounded">
-          Compass: {sensorData.compass || "-"}
+          <span className="text-cyan-200 font-semibold">Compass:</span>{" "}
+          {sensorData.compass || "..."}
         </div>
       </div>
 
@@ -186,19 +220,19 @@ const DashBoard02 = () => {
         <h2 className="font-semibold mb-2">📡 GPS Data</h2>
 
         <div className="bg-gray-800 p-1 rounded">
-          Latitude: {sensorData.latitude || "-"}
+          Latitude: {sensorData.latitude || "..."}
         </div>
         <div className="bg-gray-800 p-1 rounded">
-          Longitude: {sensorData.longitude || "-"}
+          Longitude: {sensorData.longitude || "..."}
         </div>
         <div className="bg-gray-800 p-1 rounded">
-          Satellites: {sensorData.satellites || "-"}
+          Satellites: {sensorData.satellites || "..."}
         </div>
         <div className="bg-gray-800 p-1 rounded">
-          ESP32 Time (UTC): {sensorData.esp32Time || "-"}
+          ESP32 Time (UTC): {sensorData.esp32Time || "..."}
         </div>
         <div className="bg-gray-800 p-1 rounded">
-          Dashboard Log Time: {sensorData.dashboardTime || "-"}
+          Dashboard Log Time: {sensorData.dashboardTime || "..."}
         </div>
       </div>
 
