@@ -162,23 +162,23 @@ const DashBoard03 = () => {
   // 🖼️ UI Rendering
   // ---------------------------------------------------------------------------
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center py-6">
+    <div className="px-4 min-h-screen bg-gray-900 text-white flex flex-col items-center py-6">
       <h1 className="text-2xl font-bold mb-4 text-center">
         BRACU Diganta CanSat Learning Kit
       </h1>
 
       {/* 🌐 IP Input + Connect Button */}
-      <div className="flex gap-1 mb-2 text-sm text-center items-center">
+      <div className="flex w-full max-w-md  gap-1 mb-2 text-sm text-center items-center ">
         <input
           type="text"
           placeholder="EnterESP32IP: 192.168.0.123"
           value={ip}
           onChange={(e) => setIp(e.target.value)}
-          className="rounded text-white border-2 bg-gray-700 py-0.5"
+          className=" w-[60%] rounded text-white border-2 bg-gray-700 py-1.5"
         />
         <button
           onClick={toggleConnection}
-          className={`px-1 py-1 rounded font-semibold  ${
+          className={` w-[40%] px-1 py-2 rounded font-semibold  ${
             connected ? "bg-red-500" : "bg-green-500"
           }`}
         >
@@ -195,22 +195,23 @@ const DashBoard03 = () => {
       </div>
 
       {/* 🔘 Command Panel */}
-      <div className="flex gap-2 mb-4">
+      <h2 className="text-lg font-bold text-blue-300 mb-2">Command Pannel</h2>
+      <div className=" flex  gap-2 mb-4 w-full max-w-md ">
         <button
           onClick={handleStartLogging}
-          className="px-1 font-semibold text-sm text-white py-1 rounded bg-green-300 text-black"
+          className="py-2 w-full px-1 font-semibold text-sm text-white  rounded bg-green-300 "
         >
           Start Logging
         </button>
         <button
           onClick={handleReset}
-          className="px-1 font-semibold text-sm text-white py-1 rounded bg-blue-500"
+          className="py-2 w-full px-1 font-semibold text-sm text-white  rounded bg-blue-500"
         >
           Reset
         </button>
         <button
           onClick={handleCalibrate}
-          className="px-1 font-semibold text-sm text-white py-1 rounded bg-yellow-600"
+          className="py-2 w-full px-1 font-semibold text-sm text-white  rounded bg-yellow-600"
         >
           Calibrate
         </button>
@@ -222,7 +223,9 @@ const DashBoard03 = () => {
       )}
 
       {/* 📊 Sensor Data with Units */}
-      <div className="grid grid-cols-2 gap-1 mb-2">
+
+      <h2 className="text-lg font-bold text-blue-300 mb-2">Telementary Data</h2>
+      <div className="grid grid-cols-2 gap-1 mb-2  w-full max-w-md">
         {[
           { key: "altitude", label: "Altitude", unit: "m" },
           { key: "temperature", label: "Temperature", unit: "°C" },
@@ -244,7 +247,7 @@ const DashBoard03 = () => {
 
       {/* 🧭 GPS Data with Styled Header */}
       <div className="space-y-1 w-full max-w-md mb-2">
-        <h2 className="text-lg font-bold text-blue-300 mb-2">
+        <h2 className="text-lg text-center font-bold text-blue-300 mb-2">
           📡 GPS & Time Data
         </h2>
         {[
